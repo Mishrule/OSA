@@ -11,5 +11,6 @@ namespace OSA.Domain.Entities
     {
         public string Url { get; set; }
         public string UserName { get; set; }
+       // public Student Student { get; set; }
     }
 }

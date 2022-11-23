@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using OSA.Domain.Entities.Base;
-using OSA.Infrastructure.Core.Enums;
+using OSA.Models.Core.Enums;
 
 namespace OSA.Domain.Entities
 {
@@ -11,7 +11,7 @@ namespace OSA.Domain.Entities
         {
             Guardians = new HashSet<Guardian>();
         }
-
+        
         public string StudentNumber { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
@@ -27,7 +27,7 @@ namespace OSA.Domain.Entities
         [ForeignKey("Batch")]
         public int BatchId { get; set; }
         public virtual Batch Batch { get; set; }
-        public virtual ICollection<Guardian> Guardians { get; set; }
-        public AuditBase Audit { get; set; }
+        public virtual ICollection<Guardian> Guardians { get; private set; }
+       // public AuditBase Audit { get; set; }
     }
 }

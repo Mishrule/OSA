@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using OSA.Domain.Entities.Base;
-using OSA.Infrastructure.Core.Enums;
+using OSA.Models.Core.Enums;
 
 namespace OSA.Domain.Entities
 {
@@ -23,9 +18,9 @@ namespace OSA.Domain.Entities
         public string Email { get; set; }
         public PartyType PartyType { get; set; }
 
-        [ForeignKey("Student")]
+       // [ForeignKey("Student")]
         public int StudentId { get; set; }
         public virtual Student Student { get; set; }
-        public AuditBase Audit { get; set; }
+       // public AuditBase Audit { get; set; }
     }
 }

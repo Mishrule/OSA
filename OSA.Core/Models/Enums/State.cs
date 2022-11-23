@@ -1,4 +1,4 @@
-﻿namespace OSA.Infrastructure.Core.Enums
+﻿namespace OSA.Models.Core.Enums
 {
 	public enum State
 	{

@@ -1,16 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OSA.Domain.Entities.Base.Interfaces;
+using OSA.Models.Core.Enums;
 
 namespace OSA.Domain.Entities.Base
 {
     public class EntityBase: IEntityBase
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public virtual int Id { get; protected set; }
+        public int Id { get; protected set; }
+
+        public State State { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string ModifiedBy { get; set; }
+        public DateTime ModifiedDate { get; set; }
+
+        
     }
 }
