@@ -12,9 +12,9 @@ namespace OSA.Domain.Entities
         public string Contact { get; set; }
         public string Relationship { get; set; }
 
-        [ForeignKey("Image")]
-        public int ImageId { get; set; }
-        public virtual Images Image { get; set; }
+        //[ForeignKey("Image")]
+        //public int ImageId { get; set; }
+        //public virtual Images Image { get; set; }
         public string Email { get; set; }
         public PartyType PartyType { get; set; }
 

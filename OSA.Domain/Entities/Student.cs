@@ -20,9 +20,9 @@ namespace OSA.Domain.Entities
         public int Age { get; set; }
         public string StudentClass { get; set; }
         public string Location { get; set; }
-        [ForeignKey("Image")]
-        public int ImageId { get; set; }
-        public virtual Images Image { get; set; }
+        //[ForeignKey("Image")]
+        //public int ImageId { get; set; }
+        //public virtual Images Image { get; set; }
         public Status Status { get; set; }
         [ForeignKey("Batch")]
         public int BatchId { get; set; }

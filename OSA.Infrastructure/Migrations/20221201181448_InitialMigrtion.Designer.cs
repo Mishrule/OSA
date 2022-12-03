@@ -10,8 +10,8 @@ using OSA.Infrastructure.Data;
 namespace OSA.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221123184933_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20221201181448_InitialMigrtion")]
+    partial class InitialMigrtion
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -180,9 +180,6 @@ namespace OSA.Infrastructure.Migrations
                     b.Property<int>("GuardianId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ImageId")
-                        .HasColumnType("int");
-
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
@@ -225,8 +222,6 @@ namespace OSA.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("GuardianId");
-
-                    b.HasIndex("ImageId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -294,9 +289,6 @@ namespace OSA.Infrastructure.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ImageId")
-                        .HasColumnType("int");
-
                     b.Property<string>("MiddleName")
                         .HasColumnType("nvarchar(max)");
 
@@ -323,9 +315,7 @@ namespace OSA.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ImageId");
-
-                    b.ToTable("Guardian");
+                    b.ToTable("Guardians");
                 });
 
             modelBuilder.Entity("OSA.Domain.Entities.Images", b =>
@@ -341,6 +331,9 @@ namespace OSA.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("GuardianId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -350,6 +343,9 @@ namespace OSA.Infrastructure.Migrations
                     b.Property<int>("State")
                         .HasColumnType("int");
 
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
@@ -357,6 +353,10 @@ namespace OSA.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GuardianId");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Images");
                 });
@@ -382,9 +382,6 @@ namespace OSA.Infrastructure.Migrations
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ImageId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
@@ -421,13 +418,11 @@ namespace OSA.Infrastructure.Migrations
                     b.HasIndex("BatchId")
                         .IsUnique();
 
-                    b.HasIndex("ImageId");
-
                     b.HasIndex("StudentNumber")
                         .IsUnique()
                         .HasFilter("[StudentNumber] IS NOT NULL");
 
-                    b.ToTable("Student");
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -489,15 +484,7 @@ namespace OSA.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OSA.Domain.Entities.Images", "Image")
-                        .WithMany()
-                        .HasForeignKey("ImageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Guardian");
-
-                    b.Navigation("Image");
                 });
 
             modelBuilder.Entity("OSA.Domain.Entities.Guardian", b =>
@@ -508,13 +495,24 @@ namespace OSA.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OSA.Domain.Entities.Images", "Image")
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("OSA.Domain.Entities.Images", b =>
+                {
+                    b.HasOne("OSA.Domain.Entities.Guardian", "Guardian")
                         .WithMany()
-                        .HasForeignKey("ImageId")
+                        .HasForeignKey("GuardianId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Image");
+                    b.HasOne("OSA.Domain.Entities.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Guardian");
 
                     b.Navigation("Student");
                 });
@@ -527,15 +525,7 @@ namespace OSA.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OSA.Domain.Entities.Images", "Image")
-                        .WithMany()
-                        .HasForeignKey("ImageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Batch");
-
-                    b.Navigation("Image");
                 });
 
             modelBuilder.Entity("OSA.Domain.Entities.Batch", b =>

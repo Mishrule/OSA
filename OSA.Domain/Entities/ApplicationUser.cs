@@ -14,9 +14,9 @@ namespace OSA.Domain.Entities
         public string LastName { get; set; }
         public string Contact { get; set; }
         public string Location { get; set; }
-        [ForeignKey("Image")]
-        public int ImageId { get; set; }
-        public virtual Images Image { get; set; }
+        //[ForeignKey("Image")]
+        //public int ImageId { get; set; }
+        //public virtual Images Image { get; set; }
         [ForeignKey("Guardian")]
         public int GuardianId { get; set; }
         public virtual Guardian Guardian { get; set; }

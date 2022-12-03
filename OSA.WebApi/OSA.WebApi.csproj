@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OSA.Application\OSA.Application.csproj" />
     <ProjectReference Include="..\OSA.Infrastructure\OSA.Infrastructure.csproj" />
   </ItemGroup>
 
