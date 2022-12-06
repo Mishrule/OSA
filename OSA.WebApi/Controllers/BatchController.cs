@@ -12,6 +12,7 @@ using OSA.Application.Handlers;
 using OSA.Application.Queries;
 using OSA.Application.Response;
 using OSA.Domain.Repositories;
+using OSA.Domain.Repositories.Base;
 
 namespace OSA.WebApi.Controllers
 {
@@ -22,37 +23,39 @@ namespace OSA.WebApi.Controllers
         private readonly IMediator _mediator;
         private readonly ILogger<BatchController> _logger;
         private readonly IBatchRepository _batchRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public BatchController(IMediator mediator, ILogger<BatchController> logger, IBatchRepository batchRepository, IMapper mapper)
+        public BatchController(IMediator mediator, ILogger<BatchController> logger, IBatchRepository batchRepository, IMapper mapper, IUnitOfWork unitOfWork)
         {
             _mediator = mediator;
             _logger = logger;
             _batchRepository = batchRepository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet("GetBatches")]
         [ProducesResponseType(typeof(IEnumerable<BatchResponse>), (int) HttpStatusCode.OK)]
-        public async Task<ActionResult<IEnumerable<BatchResponse>>> GetBatches()
+        public async Task<ActionResult<BaseResponseList<BatchResponse>>> GetBatches()
         {
             var query = new GetBatchesQuery();
             var batches = await _mediator.Send(query);
-            //if (batches.Count() == decimal.Zero)
-            //{
-            //    return NotFound();
-            //}
+            if (!batches.IsSuccess)
+            {
+                return NotFound();
+            }
 
             return Ok(batches);
         }
 
         [HttpGet("GetBatchByName/{batchName}")]
-        [ProducesResponseType(typeof(IEnumerable<BatchResponse>), (int) HttpStatusCode.OK)]
-        public async Task<ActionResult<IEnumerable<BatchResponse>>> GetBatchByName(string batchName)
+        [ProducesResponseType(typeof(BaseResponseList<BatchResponse>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<BaseResponseList<BatchResponse>>> GetBatchByName(string batchName)
         {
             var query = new GetBatchByNameQuery(batchName);
             var batch = await _mediator.Send(query);
-            if (batch.Count() == decimal.Zero)
+            if (!batch.IsSuccess)
             {
                 return NotFound();
             }
@@ -60,8 +63,8 @@ namespace OSA.WebApi.Controllers
         }
 
         [HttpGet("GetBatchById/{id}")]
-        [ProducesResponseType(typeof(BatchResponse), (int) HttpStatusCode.OK)]
-        public async Task<ActionResult<BatchResponse>> GetBatchById(int id)
+        [ProducesResponseType(typeof(BatchResponse), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<BaseResponse<BatchResponse>>> GetBatchById(int id)
         {
             var query = new GetBatchByIdQuery(id);
             var batch = await _mediator.Send(query);
@@ -74,26 +77,62 @@ namespace OSA.WebApi.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(BatchResponse), (int) HttpStatusCode.OK)]
-        public async Task<ActionResult<BatchResponse>> CreateBatch([FromBody] CreateBatchCommand command)
+        public async Task<ActionResult<BaseResponse<BatchResponse>>> CreateBatch([FromBody] CreateBatchCommand command)
         {
             var result = await _mediator.Send(command);
+            var isSuccess = await _unitOfWork.Save(HttpContext);
+            if (!isSuccess)
+            {
+                return new BaseResponse<BatchResponse>()
+                {
+                    IsSuccess = false,
+                    Message = "Failed to Create Batch"
+                };
+            }
             return Ok(result);
         }
 
-        [HttpPut]
-        [ProducesResponseType(typeof(BatchResponse), (int) HttpStatusCode.OK)]
-        public async Task<ActionResult<BatchResponse>> UpdateBatch([FromBody] UpdateBatchCommand command)
-        { 
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(BatchResponse), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<BaseResponse<BatchResponse>>> UpdateBatch(int id, [FromBody] UpdateBatchCommand command)
+        {
+            if (id != command.Id)
+            {
+                return BadRequest();
+            }
             var result = await _mediator.Send(command);
+            var isSuccess = await _unitOfWork.Save(HttpContext);
+            if (!isSuccess)
+            {
+                return new BaseResponse<BatchResponse>()
+                {
+                    IsSuccess = false,
+                    Message = "Failed to Update Batch"
+                };
+            }
             return Ok(result);
         }
 
-        [HttpDelete]
-        [ProducesResponseType(typeof(BatchResponse), (int) HttpStatusCode.OK)]
-        public async Task<ActionResult<BatchResponse>> DeleteBatch([FromBody] DeleteBatchCommand command)
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(BatchResponse), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<BaseResponse<BatchResponse>>> DeleteBatch(int id, [FromBody] DeleteBatchCommand command)
         {
+            if (id != command.Id)
+            {
+                return BadRequest();
+            }
             var result = await _mediator.Send(command);
+            var isSuccess = await _unitOfWork.Save(HttpContext);
+            if (!isSuccess)
+            {
+                return new BaseResponse<BatchResponse>()
+                {
+                    IsSuccess = false,
+                    Message = "Failed to Delete Batch"
+                };
+            }
             return Ok(result);
+            
         }
     }
 }

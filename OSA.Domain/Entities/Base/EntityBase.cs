@@ -5,7 +5,7 @@ using OSA.Models.Core.Enums;
 
 namespace OSA.Domain.Entities.Base
 {
-    public class EntityBase: IEntityBase
+    public abstract class EntityBase: IEntityBase
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; protected set; }

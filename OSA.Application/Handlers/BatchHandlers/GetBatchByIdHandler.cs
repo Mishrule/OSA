@@ -12,7 +12,7 @@ using OSA.Domain.Repositories;
 
 namespace OSA.Application.Handlers
 {
-    public class GetBatchByIdHandler: IRequestHandler<GetBatchByIdQuery, BatchResponse>
+    public class GetBatchByIdHandler: IRequestHandler<GetBatchByIdQuery, BaseResponse<BatchResponse>>
     {
         private readonly IBatchRepository _batchRepository;
         private readonly IMapper _mapper;
@@ -23,11 +23,16 @@ namespace OSA.Application.Handlers
             _mapper = mapper;
         }
 
-        public async Task<BatchResponse> Handle(GetBatchByIdQuery request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<BatchResponse>> Handle(GetBatchByIdQuery request, CancellationToken cancellationToken)
         {
-            var batch = await _batchRepository.GetByIdAsync(request.Id);
+            var batch = await _batchRepository.Get(q=>q.Id == request.Id);
             var response = _mapper.Map<BatchResponse>(batch);
-            return response;
+            return new BaseResponse<BatchResponse>()
+            {
+                IsSuccess = true,
+                Message = "Item Retrieved Successfully",
+                Result = response
+            };
         }
     }
 }

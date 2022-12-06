@@ -9,7 +9,7 @@ using OSA.Models.Core.Enums;
 
 namespace OSA.Application.Commands
 {
-    public class CreateBatchCommand:IRequest<BatchResponse>
+    public class CreateBatchCommand:IRequest<BaseResponse<BatchResponse>>
     {
         public string Name { get; set; }
         public string Description { get; set; }

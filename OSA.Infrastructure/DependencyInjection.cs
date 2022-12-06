@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using OSA.Domain.Entities;
 using OSA.Domain.Repositories;
 using OSA.Domain.Repositories.Base;
 using OSA.Infrastructure.Repositories;
@@ -23,9 +25,14 @@ namespace OSA.Infrastructure
             #region Repositories
 
             service.AddTransient(typeof(IRepository<>), typeof(Repository<>));
+            service.AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork));
             service.AddTransient<IBatchRepository, BatchRepository>();
-            
+            //service.AddTransient<IUnitOfWork, UnitOfWork>();
 
+            service.AddIdentityCore<ApplicationUser>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+                //.AddDefaultTokenProviders();
             #endregion
 
             return service;

@@ -4,21 +4,7 @@ using OSA.Domain.Entities;
 
 namespace OSA.Domain.EntityConfigurations
 {
-    //public class StudentConfiguration : EntityTypeConfiguration<Student>
-    //{
-    //    public StudentConfiguration()
-    //    {
-    //        HasIndex(i => i.StudentNumber).IsUnique();
-    //        HasKey(s => s.Id);
 
-    //        HasRequired(s => s.Batch)
-    //            .WithRequiredPrincipal(s => s.Student);
-
-    //        HasMany(g => g.Guardians)
-    //            .WithRequired(d => d.Student).HasForeignKey(f => f.Id);
-
-    //    }
-    //}
 
     public class StudentConfiguration : IEntityTypeConfiguration<Student>
     {

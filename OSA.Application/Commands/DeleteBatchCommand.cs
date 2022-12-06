@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace OSA.Application.Commands
 {
-    public class DeleteBatchCommand : IRequest<BatchResponse>
+    public class DeleteBatchCommand : IRequest<BaseResponse<BatchResponse>>
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public State State { get; set; }
-        public string ModifiedBy { get; set; }
-        public DateTime ModifiedDate { get; set; }
+        //public string Name { get; set; }
+        //public string Description { get; set; }
+        //public State State { get; set; }
+        //public string ModifiedBy { get; set; }
+        //public DateTime ModifiedDate { get; set; }
     }
 }
 

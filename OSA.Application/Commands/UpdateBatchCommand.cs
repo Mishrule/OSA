@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OSA.Application.Commands
 {
-    public class UpdateBatchCommand : IRequest<BatchResponse>
+    public class UpdateBatchCommand : IRequest<BaseResponse<BatchResponse>>
     {
         public int Id { get;set; }
         public string Name { get; set; }

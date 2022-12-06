@@ -8,19 +8,23 @@ using OSA.Domain.Entities.Base;
 
 namespace OSA.Domain.Repositories.Base
 {
-    public interface IRepository<T> where T: EntityBase
+
+    public interface IRepository<T> where T : class
     {
-        Task<IEnumerable<T>> GetAllAsync();
-        Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate);
+        Task<IList<T>> GetAll(
+            Expression<Func<T, bool>> expression = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>
+                orderBy = null, List<string> includes = null);
 
-        Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate = null,
-            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-            List<string> includeString = null,
-            bool disableTracking = true);
+        Task<T> Get(Expression<Func<T, bool>> expression, List<string> includes = null);
+        Task Insert(T entity);
 
-        Task<T> GetByIdAsync(int id);
-        Task<T> AddAsync(T entity);
-        Task UpdateAsync(T entity);
-        Task DeleteAsync(T entity);
-    }
+        Task InsertRange(IEnumerable<T> entities);
+        Task Delete(int id);
+        void DeleteRange(IEnumerable<T> entities);
+        void Update(T entity);
+
+        Task<bool> Exists(Expression<Func<T, bool>> expression);
+  }
+
 }

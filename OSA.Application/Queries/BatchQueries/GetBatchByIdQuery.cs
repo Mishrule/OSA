@@ -8,7 +8,7 @@ using OSA.Application.Response;
 
 namespace OSA.Application.Queries
 {
-    public class GetBatchByIdQuery:IRequest<BatchResponse>
+    public class GetBatchByIdQuery:IRequest<BaseResponse<BatchResponse>>
     {
         public int Id { get; set; }
 

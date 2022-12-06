@@ -12,42 +12,57 @@ using Microsoft.EntityFrameworkCore;
 using OSA.Domain.Entities;
 using OSA.Domain.Repositories;
 using OSA.Infrastructure.Data;
+using OSA.Domain.Repositories.Base;
 
 namespace OSA.Application.Handlers.BatchHandlers
 {
-    public class UpdateBatchHandler : IRequestHandler<UpdateBatchCommand, BatchResponse>
+    public class UpdateBatchHandler : IRequestHandler<UpdateBatchCommand, BaseResponse<BatchResponse>>
     {
-        private readonly IBatchRepository _batchRepository;
+       // private readonly IBatchRepository _batchRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         protected readonly ApplicationDbContext _dbContext;
 
-        public UpdateBatchHandler(IBatchRepository batchRepository, IMapper mapper, ApplicationDbContext dbContext)
+        public UpdateBatchHandler( IMapper mapper, ApplicationDbContext dbContext, IUnitOfWork unitOfWork)
         {
-            _batchRepository = batchRepository;
             _mapper = mapper;
             _dbContext = dbContext;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<BatchResponse> Handle(UpdateBatchCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<BatchResponse>> Handle(UpdateBatchCommand request, CancellationToken cancellationToken)
         {
-            //var batchData = await _dbContext.Batches.Where(a => a.Id == request.Id).FirstOrDefaultAsync();
-             var batchEntity =  _mapper.Map<Batch>(request);
-           // batchData =  _mapper.Map<Batch>(request);
-            if (batchEntity == null)
+            if (request == null)
             {
-                throw new ApplicationException("Entity could not be mapped");
+                return new BaseResponse<BatchResponse>()
+                {
+                    IsSuccess = false,
+                    Message = "Request cannot be null"
+                };
             }
-            //batchEntity.CreatedBy = batchData.CreatedBy;
-            //batchEntity.CreatedDate = batchData.CreatedDate;
 
-            var batch = _batchRepository.UpdateAsync(batchEntity);
-            if (batch.IsCompleted)
+            var batch = await _unitOfWork.Batches.Get(b => b.Id == request.Id);
+            if (batch == null)
             {
-                var batchResponse = _mapper.Map<BatchResponse>(batchEntity);
-                return batchResponse;
+                return new BaseResponse<BatchResponse>()
+                {
+                    IsSuccess = false,
+                    Message = "Batch not found"
+                };
             }
-            
-            return new BatchResponse();
+
+            var batchMapped = _mapper.Map(request,batch);
+            _unitOfWork.Batches.Update(batchMapped);
+
+            var response = _mapper.Map<BatchResponse>(batchMapped);
+            return new BaseResponse<BatchResponse>()
+            {
+                IsSuccess = true,
+                Message = "Batch Updated Successfully",
+                Result = response
+            };
+
+           
         }
     }
 }

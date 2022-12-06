@@ -5,80 +5,100 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using OSA.Domain.Entities;
 
 namespace OSA.Infrastructure.Repositories.Base
 {
-    public class Repository<T> : IRepository<T> where T : EntityBase
+
+  public class Repository<T> : IRepository<T> where T : class
+  {
+    private readonly ApplicationDbContext _context;
+    private readonly DbSet<T> _db;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public Repository(ApplicationDbContext context)
     {
-        protected readonly ApplicationDbContext _dbContext;
-        private readonly DbSet<T> _db;
-        
-
-        public Repository(ApplicationDbContext dbContext)
-        {
-            _dbContext = dbContext;
-           // _db = dbContext.Set<T>();
-
-        }
-
-        public async Task<T> AddAsync(T entity)
-        {
-            await _dbContext.Set<T>().AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
-            return entity;
-
-        }
-
-        public async Task DeleteAsync(T entity)
-        {
-            _dbContext.Set<T>().Remove(entity);
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task<IEnumerable<T>> GetAllAsync()
-        {
-            return await _dbContext.Set<T>().AsNoTracking().ToListAsync();
-        }
-
-        public async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate)
-        {
-            return await _dbContext.Set<T>().Where(predicate).AsNoTracking().ToListAsync();
-        }
-
-        public async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, List<string> includeString = null, bool disableTracking = true)
-        {
-            IQueryable<T> query = _dbContext.Set<T>();
-            if (disableTracking) query = query.AsNoTracking();
-            if (includeString != null)
-            {
-                foreach (var include in includeString)
-                {
-                    query = query.Include(include);
-                }
-                
-            }
-            if(predicate != null) query = query.Where(predicate);
-            if (orderBy != null)
-                return await orderBy(query).ToListAsync();
-            return await query.AsNoTracking().ToListAsync();
-        }
-
-        public async Task<T> GetByIdAsync(int id)
-        {
-            return await _dbContext.Set<T>().FindAsync(id);
-        }
-
-        public async Task UpdateAsync(T entity)
-        {
-            _dbContext.Entry<T>(entity).State = EntityState.Modified;
-
-            await _dbContext.SaveChangesAsync();
-            //_db.Attach(entity);
-            //_dbContext.Entry(entity).State = EntityState.Modified;
-            //await _dbContext.SaveChangesAsync();
-        }
+      _context = context;
+      _db = context.Set<T>();
     }
+
+    public async Task<IList<T>> GetAll(Expression<Func<T, bool>> expression = null,
+      Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, List<string> includes = null)
+    {
+      IQueryable<T> query = _db;
+      if (expression != null)
+      {
+        query = query.Where(expression);
+      }
+
+      if (includes != null)
+      {
+        foreach (var include in includes)
+        {
+          query = query.Include(include);
+        }
+      }
+
+      if (orderBy != null)
+      {
+        query = orderBy(query);
+      }
+
+      return await query.AsNoTracking().ToListAsync();
+    }
+
+    public async Task<T> Get(Expression<Func<T, bool>> expression, List<string> includes = null)
+    {
+      IQueryable<T> query = _db;
+      if (includes != null)
+      {
+        foreach (var prop in includes)
+        {
+          query = query.Include(prop);
+        }
+      }
+
+      return await query.AsNoTracking().FirstOrDefaultAsync(expression);
+    }
+
+    public async Task Insert(T entity)
+    {
+      await _db.AddAsync(entity);
+    }
+
+    public async Task InsertRange(IEnumerable<T> entities)
+    {
+      await _db.AddRangeAsync(entities);
+      
+    }
+
+    public async Task Delete(int id)
+    {
+      var record = await _db.FindAsync(id);
+      _db.Remove(record);
+    }
+
+    public void DeleteRange(IEnumerable<T> entities)
+    {
+      _db.RemoveRange(entities);
+    }
+
+    public void Update(T entity)
+    {
+      _db.Attach(entity);
+      _context.Entry(entity).State = EntityState.Modified;
+    }
+
+    public async Task<bool> Exists(Expression<Func<T, bool>> expression)
+    {
+      return await _db.AnyAsync(expression);
+    }
+
+  }
 }
