@@ -50,15 +50,7 @@ namespace OSA.Application.Handlers.BatchHandlers
                 Message = "Batch Deleted Successfully"
             };
 
-            //var batchEntity = _mapper.Map<Batch>(request);
-            //if (batchEntity == null)
-            //{
-            //    throw new ApplicationException("Entity could not be mapped");
-            //}
-
-            //var batch = _batchRepository.Delete(request.Id);
-            //var batchResponse = _mapper.Map<BatchResponse>(batch);
-            //return batchResponse; ;
+            
         }
     }
 }

@@ -19,6 +19,9 @@ namespace OSA.Application.Mapper
             CreateMap<Batch, DeleteBatchCommand>().ReverseMap();
             CreateMap<Batch, BatchResponse>().ReverseMap();
             CreateMap<UpdateBatchCommand, BatchResponse>().ReverseMap();
+
+
+            CreateMap<Student, StudentResponse>().ReverseMap();
         }
     }
 }

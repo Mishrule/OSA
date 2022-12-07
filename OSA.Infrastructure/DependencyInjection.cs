@@ -27,6 +27,7 @@ namespace OSA.Infrastructure
             service.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             service.AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork));
             service.AddTransient<IBatchRepository, BatchRepository>();
+            service.AddTransient<IStudentRepository, StudentRepository>();
             //service.AddTransient<IUnitOfWork, UnitOfWork>();
 
             service.AddIdentityCore<ApplicationUser>()

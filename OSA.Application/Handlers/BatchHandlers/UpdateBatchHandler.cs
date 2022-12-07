@@ -18,7 +18,6 @@ namespace OSA.Application.Handlers.BatchHandlers
 {
     public class UpdateBatchHandler : IRequestHandler<UpdateBatchCommand, BaseResponse<BatchResponse>>
     {
-       // private readonly IBatchRepository _batchRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         protected readonly ApplicationDbContext _dbContext;

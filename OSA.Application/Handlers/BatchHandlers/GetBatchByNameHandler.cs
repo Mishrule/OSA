@@ -15,7 +15,6 @@ namespace OSA.Application.Handlers
 {
     public class GetBatchByNameHandler : IRequestHandler<GetBatchByNameQuery, BaseResponseList<BatchResponse>>
     {
-        //private readonly IBatchRepository _batchRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 

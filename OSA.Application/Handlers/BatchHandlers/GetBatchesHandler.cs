@@ -15,13 +15,11 @@ namespace OSA.Application.Handlers
 {
     public class GetBatchesHandler: IRequestHandler<GetBatchesQuery, BaseResponseList<BatchResponse>>
     {
-       // private readonly IBatchRepository _batchRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
         public GetBatchesHandler(IMapper mapper, IUnitOfWork unitOfWork)
         {
-            //_batchRepository = batchRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
