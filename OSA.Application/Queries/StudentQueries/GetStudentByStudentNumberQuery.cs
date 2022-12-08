@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OSA.Application.Queries.StudentQueries
 {
-    public class GetStudentByStudentNumberQuery : IRequest<BaseResponseList<StudentResponse>>, IRequest<BaseResponse<StudentResponse>>
+    public class GetStudentByStudentNumberQuery :  IRequest<BaseResponse<StudentResponse>>
     {
         public string StudentNumber { get; set; }
         public GetStudentByStudentNumberQuery(string studentNumber)

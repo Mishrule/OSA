@@ -7,9 +7,9 @@ using MediatR;
 using OSA.Application.Response;
 using OSA.Models.Core.Enums;
 
-namespace OSA.Application.Commands
+namespace OSA.Application.Commands.BatchCommands
 {
-    public class CreateBatchCommand:IRequest<BaseResponse<BatchResponse>>
+    public class CreateBatchCommand : IRequest<BaseResponse<BatchResponse>>
     {
         public string Name { get; set; }
         public string Description { get; set; }

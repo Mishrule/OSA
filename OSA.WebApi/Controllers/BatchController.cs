@@ -7,7 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using OSA.Application.Commands;
+using OSA.Application.Commands.BatchCommands;
 using OSA.Application.Handlers;
 using OSA.Application.Queries;
 using OSA.Application.Response;

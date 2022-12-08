@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using OSA.Application.Commands;
+using OSA.Application.Commands.BatchCommands;
 using OSA.Application.Response;
 using OSA.Domain.Entities;
 using OSA.Domain.Repositories.Base;

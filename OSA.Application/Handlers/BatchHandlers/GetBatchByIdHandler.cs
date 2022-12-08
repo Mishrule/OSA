@@ -9,28 +9,29 @@ using MediatR;
 using OSA.Application.Queries;
 using OSA.Application.Response;
 using OSA.Domain.Repositories;
+using OSA.Domain.Repositories.Base;
 
 namespace OSA.Application.Handlers
 {
     public class GetBatchByIdHandler: IRequestHandler<GetBatchByIdQuery, BaseResponse<BatchResponse>>
     {
-        private readonly IBatchRepository _batchRepository;
+       private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public GetBatchByIdHandler(IBatchRepository batchRepository, IMapper mapper)
+        public GetBatchByIdHandler( IMapper mapper, IUnitOfWork unitOfWork)
         {
-            _batchRepository = batchRepository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<BaseResponse<BatchResponse>> Handle(GetBatchByIdQuery request, CancellationToken cancellationToken)
         {
-            var batch = await _batchRepository.Get(q=>q.Id == request.Id);
+            var batch = await _unitOfWork.Batches.Get(q=>q.Id == request.Id);
             var response = _mapper.Map<BatchResponse>(batch);
             return new BaseResponse<BatchResponse>()
             {
                 IsSuccess = true,
-                Message = "Item Retrieved Successfully",
+                Message = "Batch Retrieved Successfully",
                 Result = response
             };
         }

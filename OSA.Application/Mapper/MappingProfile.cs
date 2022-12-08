@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
-using OSA.Application.Commands;
+using OSA.Application.Commands.BatchCommands;
+using OSA.Application.Commands.StudentCommands;
 using OSA.Application.Response;
 using OSA.Domain.Entities;
 
@@ -22,6 +23,7 @@ namespace OSA.Application.Mapper
 
 
             CreateMap<Student, StudentResponse>().ReverseMap();
+            CreateMap<Student, CreateStudentCommand>().ReverseMap();
         }
     }
 }

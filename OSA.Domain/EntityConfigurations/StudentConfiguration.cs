@@ -13,7 +13,7 @@ namespace OSA.Domain.EntityConfigurations
             builder.HasIndex(i => i.StudentNumber).IsUnique();
             builder.HasKey(s => s.Id);
 
-            builder.HasOne(s => s.Batch).WithOne(s => s.Student);
+           // builder.HasOne(s => s.Batch).WithOne(s => s.Student);
 
             builder.HasMany(g => g.Guardians)
                 .WithOne(d=>d.Student)

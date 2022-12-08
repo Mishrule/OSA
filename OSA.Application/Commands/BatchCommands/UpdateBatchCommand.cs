@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OSA.Application.Commands
+namespace OSA.Application.Commands.BatchCommands
 {
     public class UpdateBatchCommand : IRequest<BaseResponse<BatchResponse>>
     {
-        public int Id { get;set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public State State { get; set; }

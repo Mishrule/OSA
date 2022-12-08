@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OSA.Application.Commands
+namespace OSA.Application.Commands.BatchCommands
 {
     public class DeleteBatchCommand : IRequest<BaseResponse<BatchResponse>>
     {

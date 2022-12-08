@@ -13,7 +13,7 @@ namespace OSA.Domain.Entities
     {
         public string Name { get; set; }
         public string Description { get; set; }
-       public virtual Student Student { get; set; }
+      // public virtual Student Student { get; set; }
       
     }
 }

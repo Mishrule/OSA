@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using OSA.Application.Commands;
 using OSA.Application.Response;
 using System;
 using System.Collections.Generic;
@@ -13,6 +12,7 @@ using OSA.Domain.Entities;
 using OSA.Domain.Repositories;
 using OSA.Infrastructure.Data;
 using OSA.Domain.Repositories.Base;
+using OSA.Application.Commands.BatchCommands;
 
 namespace OSA.Application.Handlers.BatchHandlers
 {
@@ -20,12 +20,12 @@ namespace OSA.Application.Handlers.BatchHandlers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        protected readonly ApplicationDbContext _dbContext;
+       // protected readonly ApplicationDbContext _dbContext;
 
-        public UpdateBatchHandler( IMapper mapper, ApplicationDbContext dbContext, IUnitOfWork unitOfWork)
+        public UpdateBatchHandler( IMapper mapper, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
-            _dbContext = dbContext;
+           // _dbContext = dbContext;
             _unitOfWork = unitOfWork;
         }
 
