@@ -3,6 +3,7 @@
 	public enum PartyType
 	{
 		Staff = 1,
-		Guardian
+		Guardian,
+		OtherGuardian
 	}
 }

@@ -14,6 +14,7 @@ namespace OSA.Infrastructure.Data
 		public DbSet<Batch> Batches { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Guardian> Guardians { get; set; }
+        public DbSet<OtherGuardian> OtherGuardians { get; set; }
         public DbSet<Images> Images { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
