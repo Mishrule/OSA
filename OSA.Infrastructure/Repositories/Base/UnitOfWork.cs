@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using OSA.Domain.Entities;
-using OSA.Domain.Entities.Base;
 using OSA.Domain.Repositories.Base;
 using OSA.Infrastructure.Data;
 
@@ -20,6 +14,7 @@ namespace OSA.Infrastructure.Repositories.Base
        private readonly UserManager<ApplicationUser> _userManager;
        private IRepository<Batch> _batches;
        private IRepository<Student> _students;
+       private IRepository<Guardian> _guardians;
 
        public UnitOfWork(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
        {
@@ -66,6 +61,7 @@ namespace OSA.Infrastructure.Repositories.Base
 
         public IRepository<Batch> Batches => _batches ??= new Repository<Batch>(_context);
         public IRepository<Student> Students => _students ??= new Repository<Student>(_context);
+        public IRepository<Guardian> Guardians => _guardians ??= new Repository<Guardian>(_context);
     }
 
    

@@ -13,5 +13,6 @@ namespace OSA.Domain.Repositories.Base
     Task<bool> Save(HttpContext httpContext);
     IRepository<Batch> Batches { get; }
     IRepository<Student> Students { get; }
+    IRepository<Guardian> Guardians { get; }
   }
 }

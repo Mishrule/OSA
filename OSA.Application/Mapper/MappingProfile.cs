@@ -24,6 +24,9 @@ namespace OSA.Application.Mapper
 
             CreateMap<Student, StudentResponse>().ReverseMap();
             CreateMap<Student, CreateStudentCommand>().ReverseMap();
+
+            CreateMap<Guardian, GuardianResponse>().ReverseMap();
+            
         }
     }
 }
