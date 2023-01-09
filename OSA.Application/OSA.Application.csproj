@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Handlers\GuardianHandlers\" />
     <Folder Include="PipelineBehaviours\" />
   </ItemGroup>
 
