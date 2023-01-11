@@ -8,7 +8,7 @@ using OSA.Application.Response;
 
 namespace OSA.Application.Queries.GuardianQueries
 {
-	public record GetGuardianByFullNameQuery(string fullName):IRequest<BaseResponse<GuardianResponse>>
+	public record GetGuardianByFullNameQuery(string FullName):IRequest<BaseResponse<GuardianResponse>>
 	{
 	}
 }

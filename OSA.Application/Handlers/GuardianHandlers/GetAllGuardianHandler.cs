@@ -27,7 +27,15 @@ namespace OSA.Application.Handlers.GuardianHandlers
 		public async Task<BaseResponseList<GuardianResponse>> Handle(GetAllGuardianQuery request, CancellationToken cancellationToken)
 		{
 			var guardianList = await _unitOfWork.Guardians.GetAll();
-			var response = _mapper.Map<IEnumerable<GuardianResponse>>(request);
+			if (guardianList.Count == 0 || guardianList == null)
+			{
+				return new BaseResponseList<GuardianResponse>()
+				{
+					IsSuccess = false,
+					Message = "Sorry no guardian data found"
+				};
+			}
+			var response = _mapper.Map<IEnumerable<GuardianResponse>>(guardianList);
 			return new BaseResponseList<GuardianResponse>
 			{
 				IsSuccess = true,

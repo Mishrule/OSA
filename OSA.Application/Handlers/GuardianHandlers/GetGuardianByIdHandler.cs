@@ -12,20 +12,20 @@ using OSA.Domain.Repositories.Base;
 
 namespace OSA.Application.Handlers.GuardianHandlers
 {
-  public class GetGuardianByContactHandler : IRequestHandler<GetGuardianByContactQuery, BaseResponse<GuardianResponse>>
+  public class GetGuardianByIdHandler:IRequestHandler<GetGuardianByIdQuery, BaseResponse<GuardianResponse>>
   {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public GetGuardianByContactHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public GetGuardianByIdHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
       _unitOfWork = unitOfWork;
       _mapper = mapper;
     }
 
-    public async Task<BaseResponse<GuardianResponse>> Handle(GetGuardianByContactQuery request, CancellationToken cancellationToken)
+    public async Task<BaseResponse<GuardianResponse>> Handle(GetGuardianByIdQuery request, CancellationToken cancellationToken)
     {
-      var guardian = await _unitOfWork.Guardians.Get(g => g.Contact == request.Contact);
+      var guardian = await _unitOfWork.Guardians.Get(g => g.Id == request.guardianId);
       if (guardian == null)
       {
         return new BaseResponse<GuardianResponse>()
@@ -40,7 +40,7 @@ namespace OSA.Application.Handlers.GuardianHandlers
       return new BaseResponse<GuardianResponse>()
       {
         IsSuccess = true,
-        Message = "Records retrieve successfully",
+        Message = "Data retrieve successful",
         Result = response
       };
     }
