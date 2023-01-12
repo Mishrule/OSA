@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -22,16 +23,12 @@ namespace OSA.WebApi.Controllers
     {
         private readonly IMediator _mediator;
         private readonly ILogger<BatchController> _logger;
-        private readonly IBatchRepository _batchRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public BatchController(IMediator mediator, ILogger<BatchController> logger, IBatchRepository batchRepository, IMapper mapper, IUnitOfWork unitOfWork)
+        public BatchController(IMediator mediator, ILogger<BatchController> logger,  IUnitOfWork unitOfWork)
         {
             _mediator = mediator;
             _logger = logger;
-            _batchRepository = batchRepository;
-            _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
 
@@ -39,99 +36,196 @@ namespace OSA.WebApi.Controllers
         [ProducesResponseType(typeof(IEnumerable<BatchResponse>), (int) HttpStatusCode.OK)]
         public async Task<ActionResult<BaseResponseList<BatchResponse>>> GetBatches()
         {
-            var query = new GetBatchesQuery();
-            var batches = await _mediator.Send(query);
-            if (!batches.IsSuccess)
+            try
             {
-                return NotFound();
-            }
+                var batches = await _mediator.Send(new GetBatchesQuery());
+                if (!batches.IsSuccess)
+                {
+                    return new BaseResponseList<BatchResponse>()
+                    {
+                        IsSuccess = false,
+                        Message = "Sorry no records was found"
+                    };
+                }
 
-            return Ok(batches);
+                return Ok(batches);
+            }
+            catch (Exception e)
+            {
+                return new BaseResponseList<BatchResponse>
+                {
+                    IsSuccess = false,
+                    Message = $"Error: {e.Message}"
+                };
+            }
+            
         }
 
         [HttpGet("GetBatchByName/{batchName}")]
         [ProducesResponseType(typeof(BaseResponseList<BatchResponse>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<BaseResponseList<BatchResponse>>> GetBatchByName(string batchName)
         {
-            var query = new GetBatchByNameQuery(batchName);
-            var batch = await _mediator.Send(query);
-            if (!batch.IsSuccess)
+            try
             {
-                return NotFound();
+                var batch = await _mediator.Send(new GetBatchByNameQuery(batchName));
+                if (!batch.IsSuccess)
+                {
+                    return new BaseResponseList<BatchResponse>()
+                    {
+                        IsSuccess = false,
+                        Message = "Sorry no records was found"
+                    };
+                }
+
+                return Ok(batch);
             }
-            return Ok(batch);
+            catch (Exception e)
+            {
+                return new BaseResponseList<BatchResponse>
+                {
+                    IsSuccess = false,
+                    Message = $"Error: {e.Message}"
+                };
+            }
+            
         }
 
         [HttpGet("GetBatchById/{id}")]
         [ProducesResponseType(typeof(BatchResponse), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<BaseResponse<BatchResponse>>> GetBatchById(int id)
         {
-            var query = new GetBatchByIdQuery(id);
-            var batch = await _mediator.Send(query);
-            if (batch == null)
+            try
             {
-                return NotFound();
+                var batch = await _mediator.Send(new GetBatchByIdQuery(id));
+                if (batch == null)
+                {
+                    return new BaseResponse<BatchResponse>()
+                    {
+                        IsSuccess = false,
+                        Message = "Sorry no records was found"
+                    };
+                }
+
+                return Ok(batch);
             }
-            return Ok(batch);
+            catch (Exception e)
+            {
+                return new BaseResponse<BatchResponse>
+                {
+                    IsSuccess = false,
+                    Message = $"Error: {e.Message}"
+                };
+            }
+            
+            
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(BatchResponse), (int) HttpStatusCode.OK)]
         public async Task<ActionResult<BaseResponse<BatchResponse>>> CreateBatch([FromBody] CreateBatchCommand command)
         {
-            var result = await _mediator.Send(command);
-            var isSuccess = await _unitOfWork.Save(HttpContext);
-            if (!isSuccess)
+            try
             {
-                return new BaseResponse<BatchResponse>()
+                var result = await _mediator.Send(command);
+                var isSuccess = await _unitOfWork.Save(HttpContext);
+                if (!isSuccess)
+                {
+                    return new BaseResponse<BatchResponse>()
+                    {
+                        IsSuccess = false,
+                        Message = "Failed to Create Batch"
+                    };
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return new BaseResponse<BatchResponse>
                 {
                     IsSuccess = false,
-                    Message = "Failed to Create Batch"
+                    Message = $"Error: {e.Message}"
                 };
             }
-            return Ok(result);
+            
         }
 
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(BatchResponse), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<BaseResponse<BatchResponse>>> UpdateBatch(int id, [FromBody] UpdateBatchCommand command)
         {
-            if (id != command.Id)
+            try
             {
-                return BadRequest();
+                if (id != command.Id)
+                {
+                    return new BaseResponse<BatchResponse>()
+                    {
+                        IsSuccess = false,
+                        Message = $"Error: {id} is not valid"
+                    };
+                }
+
+                var result = await _mediator.Send(command);
+                var isSuccess = await _unitOfWork.Save(HttpContext);
+                if (!isSuccess)
+                {
+                    return new BaseResponse<BatchResponse>()
+                    {
+                        IsSuccess = false,
+                        Message = "Failed to Update Batch"
+                    };
+                }
+
+                return Ok(result);
             }
-            var result = await _mediator.Send(command);
-            var isSuccess = await _unitOfWork.Save(HttpContext);
-            if (!isSuccess)
+            catch (Exception e)
             {
-                return new BaseResponse<BatchResponse>()
+                return new BaseResponse<BatchResponse>
                 {
                     IsSuccess = false,
-                    Message = "Failed to Update Batch"
+                    Message = $"Error: {e.Message}"
                 };
             }
-            return Ok(result);
+            
         }
 
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(BatchResponse), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<BaseResponse<BatchResponse>>> DeleteBatch(int id, [FromBody] DeleteBatchCommand command)
         {
-            if (id != command.Id)
+            try
             {
-                return BadRequest();
+                if (id != command.Id)
+                {
+                    return new BaseResponse<BatchResponse>()
+                    {
+                        IsSuccess = false,
+                        Message = $"Error: {id} is not valid"
+                    };
+                }
+
+                var result = await _mediator.Send(command);
+                var isSuccess = await _unitOfWork.Save(HttpContext);
+                if (!isSuccess)
+                {
+                    return new BaseResponse<BatchResponse>()
+                    {
+                        IsSuccess = false,
+                        Message = "Failed to Delete Batch"
+                    };
+                }
+
+                return Ok(result);
             }
-            var result = await _mediator.Send(command);
-            var isSuccess = await _unitOfWork.Save(HttpContext);
-            if (!isSuccess)
+            catch (Exception e)
             {
-                return new BaseResponse<BatchResponse>()
+                return new BaseResponse<BatchResponse>
                 {
                     IsSuccess = false,
-                    Message = "Failed to Delete Batch"
+                    Message = $"Error: {e.Message}"
                 };
             }
-            return Ok(result);
+            
             
         }
     }
