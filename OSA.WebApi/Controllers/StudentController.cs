@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
@@ -28,105 +29,176 @@ namespace OSA.WebApi.Controllers
         [ProducesResponseType(typeof(IEnumerable<BaseResponse<StudentResponse>>), (int) HttpStatusCode.OK)]
         public async Task<ActionResult<BaseResponseList<StudentResponse>>> GetStudents()
         {
-            var query = new GetAllStudentsQuery();
-            var students = await _mediator.Send(query);
-            if (!students.IsSuccess)
+            try
+            {
+                var students = await _mediator.Send(new GetAllStudentsQuery());
+                if (!students.IsSuccess)
+                {
+                    return new BaseResponseList<StudentResponse>()
+                    {
+                        IsSuccess = false,
+                        Message = "Sorry no student records found"
+                    };
+                    // return NotFound();
+                }
+
+                return Ok(students);
+            }
+            catch (Exception e)
             {
                 return new BaseResponseList<StudentResponse>()
                 {
                     IsSuccess = false,
-                    Message = "Sorry no student records found"
+                    Message = $"Error: {e.Message}"
                 };
-               // return NotFound();
             }
-
-            return Ok(students);
+            
         }
 
         [HttpGet("GetStudents/{studentname}")]
         [ProducesResponseType(typeof(BaseResponse<StudentResponse>), (int) HttpStatusCode.OK)]
         public async Task<ActionResult<BaseResponse<StudentResponse>>> GetStudentByName(string studentname)
         {
-            var query = new GetStudentByFullNameQuery(studentname);
-            var student = await _mediator.Send(query);
-            if (!student.IsSuccess)
+            try
+            {
+                var student = await _mediator.Send(new GetStudentByFullNameQuery(studentname));
+                if (!student.IsSuccess)
+                {
+                    return new BaseResponse<StudentResponse>()
+                    {
+                        IsSuccess = false,
+                        Message = "Sorry no student records found"
+                    };
+                }
+
+                return Ok(student);
+            }
+            catch (Exception e)
             {
                 return new BaseResponse<StudentResponse>()
                 {
                     IsSuccess = false,
-                    Message = "Sorry no student records found"
+                    Message = $"Error: {e.Message}"
                 };
             }
-            return Ok(student);
+            
         }
 
         [HttpGet("GetStudentClass/{className}")]
         [ProducesResponseType(typeof(BaseResponseList<StudentResponse>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<BaseResponseList<StudentResponse>>> GetStudentClass(string className)
         {
-            var query = new GetStudentByClassQuery(className);
-            var student = await _mediator.Send(query);
-            if (!student.IsSuccess)
+            try
+            {
+                var student = await _mediator.Send(new GetStudentByClassQuery(className));
+                if (!student.IsSuccess)
+                {
+                    return new BaseResponseList<StudentResponse>()
+                    {
+                        IsSuccess = false,
+                        Message = "Sorry no student records found"
+                    };
+                }
+
+                return Ok(student);
+            }
+            catch (Exception e)
             {
                 return new BaseResponseList<StudentResponse>()
                 {
                     IsSuccess = false,
-                    Message = "Sorry no student records found"
+                    Message = $"Error: {e.Message}"
                 };
             }
-            return Ok(student);
+            
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(BaseResponse<StudentResponse>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<BaseResponse<StudentResponse>>> GetStudentById(int id)
         {
-            var query = new GetStudentByIdQuery(id);
-            var student = await _mediator.Send(query);
-            if (!student.IsSuccess)
+            try
+            {
+                var student = await _mediator.Send(new GetStudentByIdQuery(id));
+                if (!student.IsSuccess)
+                {
+                    return new BaseResponse<StudentResponse>()
+                    {
+                        IsSuccess = false,
+                        Message = "Sorry no student records found"
+                    };
+                }
+
+                return Ok(student);
+            }
+            catch (Exception e)
             {
                 return new BaseResponse<StudentResponse>()
                 {
                     IsSuccess = false,
-                    Message = "Sorry no student records found"
+                    Message = $"Error: {e.Message}"
                 };
             }
-            return Ok(student);
+            
         }
 
         [HttpGet("studentNumber/{studentNumber}")]
         [ProducesResponseType(typeof(BaseResponse<StudentResponse>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<BaseResponse<StudentResponse>>> GetStudentByStudentNumber(string studentNumber)
         {
-            var query = new GetStudentByStudentNumberQuery(studentNumber);
-            var student = await _mediator.Send(query);
-            if (!student.IsSuccess)
+            try
+            {
+                var student = await _mediator.Send(new GetStudentByStudentNumberQuery(studentNumber));
+                if (!student.IsSuccess)
+                {
+                    return new BaseResponse<StudentResponse>()
+                    {
+                        IsSuccess = false,
+                        Message = "Sorry no student records found"
+                    };
+                }
+
+                return Ok(student);
+            }
+            catch (Exception e)
             {
                 return new BaseResponse<StudentResponse>()
                 {
                     IsSuccess = false,
-                    Message = "Sorry no student records found"
+                    Message = $"Error: {e.Message}"
                 };
             }
-            return Ok(student);
+            
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(StudentResponse), (int) HttpStatusCode.OK)]
-        public async Task<ActionResult<BaseResponse<StudentResponse>>> CreateStudent(
-            [FromBody] CreateStudentCommand command)
+        public async Task<ActionResult<BaseResponse<StudentResponse>>> CreateStudent([FromBody] CreateStudentCommand command)
         {
-            var result = await _mediator.Send(command);
-            var isSuccess = await _unitOfWork.Save(HttpContext);
-            if (!isSuccess)
+            try
             {
-                return new BaseResponse<StudentResponse>
+                var result = await _mediator.Send(command);
+                var isSuccess = await _unitOfWork.Save(HttpContext);
+                if (!isSuccess)
+                {
+                    return new BaseResponse<StudentResponse>
+                    {
+                        IsSuccess = false,
+                        Message = "Failed to create Student"
+                    };
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return new BaseResponse<StudentResponse>()
                 {
                     IsSuccess = false,
-                    Message = "Failed to create Student"
+                    Message = $"Error: {e.Message}"
                 };
             }
-            return Ok(result);
+            
         }
 
 
@@ -134,21 +206,35 @@ namespace OSA.WebApi.Controllers
         [ProducesResponseType(typeof(StudentResponse), (int) HttpStatusCode.OK)]
         public async Task<ActionResult<BaseResponse<StudentResponse>>> DeleteStudent(int id, [FromBody]DeleteStudentCommand command)
         {
-            if (id != command.Id)
+            try
             {
-                return BadRequest();
+                if (id != command.Id)
+                {
+                    return BadRequest();
+                }
+
+                var result = await _mediator.Send(command);
+                var isSuccess = await _unitOfWork.Save(HttpContext);
+                if (!isSuccess)
+                {
+                    return new BaseResponse<StudentResponse>
+                    {
+                        IsSuccess = false,
+                        Message = "Failed to Delete Student"
+                    };
+                }
+
+                return Ok(result);
             }
-            var result = await _mediator.Send(command);
-            var isSuccess = await _unitOfWork.Save(HttpContext);
-            if (!isSuccess)
+            catch (Exception e)
             {
-                return new BaseResponse<StudentResponse>
+                return new BaseResponse<StudentResponse>()
                 {
                     IsSuccess = false,
-                    Message = "Failed to Delete Student"
+                    Message = $"Error: {e.Message}"
                 };
             }
-            return Ok(result);
+            
         }
     }
 }
