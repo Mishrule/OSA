@@ -11,6 +11,10 @@ namespace OSA.Application.Response
 {
     public class GuardianResponse : EntityBase
     {
+        public GuardianResponse()
+        {
+            OtherGuardian = new HashSet<OtherGuardian>();
+        }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string Surname { get; set; }
@@ -19,8 +23,9 @@ namespace OSA.Application.Response
         public string Relationship { get; set; }
         public string Email { get; set; }
         public PartyType PartyType { get; set; }
-        public int StudentId { get; set; }
-        public virtual Student Student { get; set; }
+        public ICollection<OtherGuardian> OtherGuardian { get; set; }
+        //public int StudentId { get; set; }
+        //public virtual Student Student { get; set; }
 
     }
 }

@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using OSA.Application.Commands.BatchCommands;
+using OSA.Application.Commands.GuardianCommands;
 using OSA.Application.Queries.GuardianQueries;
 using OSA.Application.Response;
 using OSA.Domain.Repositories.Base;
@@ -50,10 +52,113 @@ namespace OSA.WebApi.Controllers
         return new BaseResponseList<GuardianResponse>
         {
           IsSuccess = false,
-          Message = $"Sorry no records found {e.Message}"
+          Message = $"Error: {e.Message}"
         };
       }
       
     }
+
+    [HttpGet("GetGuardianByContact/{contact}")]
+    [ProducesResponseType(typeof(BaseResponse<GuardianResponse>), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<BaseResponse<GuardianResponse>>> GetGuardianByContact(string contact)
+    {
+      try
+      {
+        var guardian = await _mediator.Send(new GetGuardianByContactQuery(contact));
+        if (!guardian.IsSuccess)
+        {
+          return new BaseResponse<GuardianResponse>
+          {
+            IsSuccess = false,
+            Message = $"Sorry no contact of {contact} was found"
+          };
+        }
+
+        return Ok(guardian);
+      }
+      catch (Exception e)
+      {
+        return new BaseResponse<GuardianResponse>
+        {
+          IsSuccess = false,
+          Message = $"Error: {e.Message}"
+        };
+      }
+    }
+
+    [HttpGet("GetGuardianByFullName/{fullName}")]
+    [ProducesResponseType(typeof(BaseResponse<GuardianResponse>), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<BaseResponse<GuardianResponse>>> GetGuardianByFullName(string fullName)
+    {
+      try
+      {
+        var guardian = await _mediator.Send(new GetGuardianByFullNameQuery(fullName));
+        if (!guardian.IsSuccess)
+        {
+          return guardian;
+        }
+
+        return Ok(guardian);
+      }
+      catch (Exception e)
+      {
+        return new BaseResponse<GuardianResponse>
+        {
+          IsSuccess = false,
+          Message = $"Error: {e.Message}"
+        };
+      }
+    }
+
+    [HttpGet("GetGuardianById/{id}")]
+    [ProducesResponseType(typeof(BaseResponse<GuardianResponse>), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<BaseResponse<GuardianResponse>>> GetGuardianById(int id)
+    {
+      try
+      {
+        var guardian = await _mediator.Send(new GetGuardianByIdQuery(id));
+        if (!guardian.IsSuccess)
+        {
+          return guardian;
+        }
+
+        return Ok(guardian);
+      }
+      catch (Exception e)
+      {
+        return new BaseResponse<GuardianResponse>
+        {
+          IsSuccess = false,
+          Message = $"Error: {e.Message}"
+        };
+      }
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(GuardianResponse), (int)HttpStatusCode.Created)]
+    public async Task<ActionResult<BaseResponse<GuardianResponse>>> CreateGuardian(
+      [FromBody] CreateGuardianCommand command)
+    {
+      try
+      {
+        var result = await _mediator.Send(command);
+        if (!await _unitOfWork.Save(HttpContext))
+        {
+          return result;
+        }
+        return Ok(result);
+      }
+      catch (Exception e)
+      {
+        return new BaseResponse<GuardianResponse>()
+        {
+          IsSuccess = false,
+          Message = $"Error: {e.Message}"
+        };
+      }
+    }
+
+    
+
   }
 }

@@ -12,10 +12,10 @@ namespace OSA.Application.Response
 {
     public class StudentResponse : EntityBase
     {
-        public StudentResponse()
-        {
-            Guardians = new HashSet<Guardian>();
-        }
+        //public StudentResponse()
+        //{
+        //    Guardians = new HashSet<Guardian>();
+        //}
 
         public string StudentNumber { get; set; }
         public string FirstName { get; set; }
@@ -31,7 +31,9 @@ namespace OSA.Application.Response
         [ForeignKey("Batch")]
         public int BatchId { get; set; }
         public virtual Batch Batch { get; set; }
-        public virtual ICollection<Guardian> Guardians { get; private set; }
-        
+        [ForeignKey("Guardian")]
+        public int GuardianId { get; set; }
+        public virtual Guardian Guardian { get; set; }
+
     }
 }

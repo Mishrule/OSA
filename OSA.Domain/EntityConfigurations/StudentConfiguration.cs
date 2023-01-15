@@ -15,9 +15,9 @@ namespace OSA.Domain.EntityConfigurations
 
            // builder.HasOne(s => s.Batch).WithOne(s => s.Student);
 
-            builder.HasMany(g => g.Guardians)
-                .WithOne(d=>d.Student)
-                .HasForeignKey(f => f.Id);
+           //builder.HasMany(g => g.Guardians)
+           // .WithOne(d => d.Student)
+           //.HasForeignKey(f => f.Id);
         }
     }
 }

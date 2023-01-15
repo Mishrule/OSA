@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using OSA.Application.Commands.BatchCommands;
+using OSA.Application.Commands.GuardianCommands;
 using OSA.Application.Commands.StudentCommands;
 using OSA.Application.Response;
 using OSA.Domain.Entities;
@@ -26,6 +27,7 @@ namespace OSA.Application.Mapper
             CreateMap<Student, CreateStudentCommand>().ReverseMap();
 
             CreateMap<Guardian, GuardianResponse>().ReverseMap();
+            CreateMap<Guardian, CreateGuardianCommand>().ReverseMap();
             
         }
     }

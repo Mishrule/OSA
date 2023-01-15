@@ -26,7 +26,7 @@ namespace OSA.Application.Handlers.GuardianHandlers
 
 		public async Task<BaseResponseList<GuardianResponse>> Handle(GetAllGuardianQuery request, CancellationToken cancellationToken)
 		{
-			var guardianList = await _unitOfWork.Guardians.GetAll();
+			var guardianList = await _unitOfWork.Guardians.GetAll(); 
 			if (guardianList.Count == 0 || guardianList == null)
 			{
 				return new BaseResponseList<GuardianResponse>()

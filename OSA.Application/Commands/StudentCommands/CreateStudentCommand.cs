@@ -17,7 +17,7 @@ namespace OSA.Application.Commands.StudentCommands
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string Surname { get; set; }
-        public string FullName => FirstName + MiddleName + Surname;
+        public string FullName => FirstName +" "+ MiddleName+" " + Surname;
         public int YearGroup { get; set; }
         public int Age { get; set; }
         public string StudentClass { get; set; }

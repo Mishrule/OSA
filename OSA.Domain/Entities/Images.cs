@@ -14,10 +14,10 @@ namespace OSA.Domain.Entities
         public string UserName { get; set; }
         [ForeignKey("Student")]
         public int StudentId { get; set; }
-        public virtual Student Student { get; set; }
+       // public virtual Student Student { get; set; }
 
         [ForeignKey("Guardian")]
         public int GuardianId { get; set; }
-        public virtual Guardian Guardian { get; set; }
+      //  public virtual Guardian Guardian { get; set; }
     }
 }

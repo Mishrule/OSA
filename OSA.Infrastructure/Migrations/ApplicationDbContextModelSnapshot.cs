@@ -273,7 +273,8 @@ namespace OSA.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Contact")
                         .HasColumnType("nvarchar(max)");
@@ -311,58 +312,12 @@ namespace OSA.Infrastructure.Migrations
                     b.Property<int>("State")
                         .HasColumnType("int");
 
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Surname")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Guardians");
-                });
-
-            modelBuilder.Entity("OSA.Domain.Entities.Images", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("GuardianId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("State")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GuardianId");
-
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("OSA.Domain.Entities.OtherGuardian", b =>
@@ -443,6 +398,9 @@ namespace OSA.Infrastructure.Migrations
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("GuardianId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
 
@@ -476,6 +434,8 @@ namespace OSA.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BatchId");
+
+                    b.HasIndex("GuardianId");
 
                     b.HasIndex("StudentNumber")
                         .IsUnique()
@@ -546,36 +506,6 @@ namespace OSA.Infrastructure.Migrations
                     b.Navigation("Guardian");
                 });
 
-            modelBuilder.Entity("OSA.Domain.Entities.Guardian", b =>
-                {
-                    b.HasOne("OSA.Domain.Entities.Student", "Student")
-                        .WithMany("Guardians")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("OSA.Domain.Entities.Images", b =>
-                {
-                    b.HasOne("OSA.Domain.Entities.Guardian", "Guardian")
-                        .WithMany()
-                        .HasForeignKey("GuardianId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OSA.Domain.Entities.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Guardian");
-
-                    b.Navigation("Student");
-                });
-
             modelBuilder.Entity("OSA.Domain.Entities.OtherGuardian", b =>
                 {
                     b.HasOne("OSA.Domain.Entities.Guardian", "Guardian")
@@ -595,12 +525,15 @@ namespace OSA.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Batch");
-                });
+                    b.HasOne("OSA.Domain.Entities.Guardian", "Guardian")
+                        .WithMany()
+                        .HasForeignKey("GuardianId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("OSA.Domain.Entities.Student", b =>
-                {
-                    b.Navigation("Guardians");
+                    b.Navigation("Batch");
+
+                    b.Navigation("Guardian");
                 });
 #pragma warning restore 612, 618
         }

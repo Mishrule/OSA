@@ -10,8 +10,8 @@ using OSA.Infrastructure.Data;
 namespace OSA.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221201181448_InitialMigrtion")]
-    partial class InitialMigrtion
+    [Migration("20230115001549_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -247,6 +247,9 @@ namespace OSA.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -272,7 +275,8 @@ namespace OSA.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Contact")
                         .HasColumnType("nvarchar(max)");
@@ -287,6 +291,9 @@ namespace OSA.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MiddleName")
@@ -307,9 +314,6 @@ namespace OSA.Infrastructure.Migrations
                     b.Property<int>("State")
                         .HasColumnType("int");
 
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Surname")
                         .HasColumnType("nvarchar(max)");
 
@@ -318,12 +322,15 @@ namespace OSA.Infrastructure.Migrations
                     b.ToTable("Guardians");
                 });
 
-            modelBuilder.Entity("OSA.Domain.Entities.Images", b =>
+            modelBuilder.Entity("OSA.Domain.Entities.OtherGuardian", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Contact")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -331,8 +338,17 @@ namespace OSA.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("GuardianId")
                         .HasColumnType("int");
+
+                    b.Property<string>("MiddleName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("nvarchar(max)");
@@ -340,25 +356,23 @@ namespace OSA.Infrastructure.Migrations
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("PartyType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Relationship")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("State")
                         .HasColumnType("int");
 
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserName")
+                    b.Property<string>("Surname")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("GuardianId");
 
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("Images");
+                    b.ToTable("OtherGuardians");
                 });
 
             modelBuilder.Entity("OSA.Domain.Entities.Student", b =>
@@ -382,6 +396,12 @@ namespace OSA.Infrastructure.Migrations
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("GuardianId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
@@ -415,8 +435,9 @@ namespace OSA.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BatchId")
-                        .IsUnique();
+                    b.HasIndex("BatchId");
+
+                    b.HasIndex("GuardianId");
 
                     b.HasIndex("StudentNumber")
                         .IsUnique()
@@ -487,18 +508,7 @@ namespace OSA.Infrastructure.Migrations
                     b.Navigation("Guardian");
                 });
 
-            modelBuilder.Entity("OSA.Domain.Entities.Guardian", b =>
-                {
-                    b.HasOne("OSA.Domain.Entities.Student", "Student")
-                        .WithMany("Guardians")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("OSA.Domain.Entities.Images", b =>
+            modelBuilder.Entity("OSA.Domain.Entities.OtherGuardian", b =>
                 {
                     b.HasOne("OSA.Domain.Entities.Guardian", "Guardian")
                         .WithMany()
@@ -506,36 +516,26 @@ namespace OSA.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OSA.Domain.Entities.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Guardian");
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("OSA.Domain.Entities.Student", b =>
                 {
                     b.HasOne("OSA.Domain.Entities.Batch", "Batch")
-                        .WithOne("Student")
-                        .HasForeignKey("OSA.Domain.Entities.Student", "BatchId")
+                        .WithMany()
+                        .HasForeignKey("BatchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OSA.Domain.Entities.Guardian", "Guardian")
+                        .WithMany()
+                        .HasForeignKey("GuardianId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Batch");
-                });
 
-            modelBuilder.Entity("OSA.Domain.Entities.Batch", b =>
-                {
-                    b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("OSA.Domain.Entities.Student", b =>
-                {
-                    b.Navigation("Guardians");
+                    b.Navigation("Guardian");
                 });
 #pragma warning restore 612, 618
         }

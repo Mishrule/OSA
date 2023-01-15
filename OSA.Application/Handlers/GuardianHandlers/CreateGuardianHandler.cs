@@ -52,7 +52,7 @@ namespace OSA.Application.Handlers.GuardianHandlers
       return new BaseResponse<GuardianResponse>()
       {
         IsSuccess = true,
-        Message = "Student Created Successfully",
+        Message = "Guardian Created Successfully",
         Result = guardianResponse
       };
 
