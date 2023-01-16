@@ -27,7 +27,7 @@ namespace OSA.Application.Handlers.StudentHandlers
             CancellationToken cancellationToken)
         {
             var studentList = await _unitOfWork.Students.GetAll(s => s.StudentClass == request.StudentClass,
-                orderBy: d => d.OrderByDescending(o => o.FullName), includes: new List<string> {"Batch"});
+                orderBy: d => d.OrderByDescending(o => o.FullName), includes: new List<string> {"Batch","Guardian"});
             var response = _mapper.Map<IEnumerable<StudentResponse>>(studentList);
             return new BaseResponseList<StudentResponse>
             {

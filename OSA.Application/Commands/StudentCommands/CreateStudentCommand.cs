@@ -27,7 +27,7 @@ namespace OSA.Application.Commands.StudentCommands
         public State State { get; set; }
         
         public int BatchId { get; set; }
-        public int GuardianId { get; set; }
+        //public int GuardianId { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
     }

@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OSA.Application.Commands.BatchCommands;
 using OSA.Application.Commands.StudentCommands;
 using OSA.Application.Queries.StudentQueries;
 using OSA.Application.Response;
+using OSA.Domain.Entities;
 using OSA.Domain.Repositories.Base;
 
 namespace OSA.WebApi.Controllers
@@ -34,11 +36,7 @@ namespace OSA.WebApi.Controllers
                 var students = await _mediator.Send(new GetAllStudentsQuery());
                 if (!students.IsSuccess)
                 {
-                    return new BaseResponseList<StudentResponse>()
-                    {
-                        IsSuccess = false,
-                        Message = "Sorry no student records found"
-                    };
+                    return students;
                     // return NotFound();
                 }
 
@@ -64,11 +62,7 @@ namespace OSA.WebApi.Controllers
                 var student = await _mediator.Send(new GetStudentByFullNameQuery(studentname));
                 if (!student.IsSuccess)
                 {
-                    return new BaseResponse<StudentResponse>()
-                    {
-                        IsSuccess = false,
-                        Message = "Sorry no student records found"
-                    };
+                    return student;
                 }
 
                 return Ok(student);
@@ -93,11 +87,7 @@ namespace OSA.WebApi.Controllers
                 var student = await _mediator.Send(new GetStudentByClassQuery(className));
                 if (!student.IsSuccess)
                 {
-                    return new BaseResponseList<StudentResponse>()
-                    {
-                        IsSuccess = false,
-                        Message = "Sorry no student records found"
-                    };
+                    return student;
                 }
 
                 return Ok(student);
@@ -122,11 +112,7 @@ namespace OSA.WebApi.Controllers
                 var student = await _mediator.Send(new GetStudentByIdQuery(id));
                 if (!student.IsSuccess)
                 {
-                    return new BaseResponse<StudentResponse>()
-                    {
-                        IsSuccess = false,
-                        Message = "Sorry no student records found"
-                    };
+                    return student;
                 }
 
                 return Ok(student);
@@ -151,11 +137,7 @@ namespace OSA.WebApi.Controllers
                 var student = await _mediator.Send(new GetStudentByStudentNumberQuery(studentNumber));
                 if (!student.IsSuccess)
                 {
-                    return new BaseResponse<StudentResponse>()
-                    {
-                        IsSuccess = false,
-                        Message = "Sorry no student records found"
-                    };
+                    return student;
                 }
 
                 return Ok(student);
@@ -181,11 +163,7 @@ namespace OSA.WebApi.Controllers
                 var isSuccess = await _unitOfWork.Save(HttpContext);
                 if (!isSuccess)
                 {
-                    return new BaseResponse<StudentResponse>
-                    {
-                        IsSuccess = false,
-                        Message = "Failed to create Student"
-                    };
+                    return result;
                 }
 
                 return Ok(result);
@@ -201,6 +179,40 @@ namespace OSA.WebApi.Controllers
             
         }
 
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(StudentResponse), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<BaseResponse<StudentResponse>>> UpdateBatch(int id, [FromBody] UpdateStudentCommand command)
+        {
+            try
+            {
+                if (id != command.Id)
+                {
+                    return new BaseResponse<StudentResponse>()
+                    {
+                        IsSuccess = false,
+                        Message = $"Error: {id} is not valid"
+                    };
+                }
+
+                var result = await _mediator.Send(command);
+                var isSuccess = await _unitOfWork.Save(HttpContext);
+                if (!isSuccess)
+                {
+                    return result;
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return new BaseResponse<StudentResponse>
+                {
+                    IsSuccess = false,
+                    Message = $"Error: {e.Message}"
+                };
+            }
+
+        }
 
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(StudentResponse), (int) HttpStatusCode.OK)]
@@ -217,11 +229,7 @@ namespace OSA.WebApi.Controllers
                 var isSuccess = await _unitOfWork.Save(HttpContext);
                 if (!isSuccess)
                 {
-                    return new BaseResponse<StudentResponse>
-                    {
-                        IsSuccess = false,
-                        Message = "Failed to Delete Student"
-                    };
+                    return result;
                 }
 
                 return Ok(result);

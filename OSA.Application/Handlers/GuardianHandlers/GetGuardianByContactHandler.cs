@@ -25,7 +25,7 @@ namespace OSA.Application.Handlers.GuardianHandlers
 
     public async Task<BaseResponse<GuardianResponse>> Handle(GetGuardianByContactQuery request, CancellationToken cancellationToken)
     {
-      var guardian = await _unitOfWork.Guardians.Get(g => g.Contact == request.Contact);
+      var guardian = await _unitOfWork.Guardians.Get(g => g.Contact == request.Contact, includes: new List<string> { "Student" });
       if (guardian == null)
       {
         return new BaseResponse<GuardianResponse>()

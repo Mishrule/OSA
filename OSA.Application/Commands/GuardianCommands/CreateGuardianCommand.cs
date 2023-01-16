@@ -20,7 +20,7 @@ namespace OSA.Application.Commands.GuardianCommands
 
         public string Email { get; set; }
         public PartyType PartyType { get; set; }
-        //public int StudentId { get; set; }
+        public int StudentId { get; set; }
         public State State { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }

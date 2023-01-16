@@ -10,7 +10,7 @@ using OSA.Infrastructure.Data;
 namespace OSA.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230115001549_InitialMigration")]
+    [Migration("20230116204342_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -314,10 +314,16 @@ namespace OSA.Infrastructure.Migrations
                     b.Property<int>("State")
                         .HasColumnType("int");
 
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Surname")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("StudentId")
+                        .IsUnique();
 
                     b.ToTable("Guardians");
                 });
@@ -400,9 +406,6 @@ namespace OSA.Infrastructure.Migrations
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("GuardianId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
 
@@ -436,8 +439,6 @@ namespace OSA.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BatchId");
-
-                    b.HasIndex("GuardianId");
 
                     b.HasIndex("StudentNumber")
                         .IsUnique()
@@ -508,6 +509,17 @@ namespace OSA.Infrastructure.Migrations
                     b.Navigation("Guardian");
                 });
 
+            modelBuilder.Entity("OSA.Domain.Entities.Guardian", b =>
+                {
+                    b.HasOne("OSA.Domain.Entities.Student", "Student")
+                        .WithOne("Guardian")
+                        .HasForeignKey("OSA.Domain.Entities.Guardian", "StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("OSA.Domain.Entities.OtherGuardian", b =>
                 {
                     b.HasOne("OSA.Domain.Entities.Guardian", "Guardian")
@@ -527,14 +539,11 @@ namespace OSA.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OSA.Domain.Entities.Guardian", "Guardian")
-                        .WithMany()
-                        .HasForeignKey("GuardianId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Batch");
+                });
 
+            modelBuilder.Entity("OSA.Domain.Entities.Student", b =>
+                {
                     b.Navigation("Guardian");
                 });
 #pragma warning restore 612, 618

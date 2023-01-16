@@ -25,7 +25,7 @@ namespace OSA.Application.Handlers.StudentHandlers
 
         public async Task<BaseResponse<StudentResponse>> Handle(GetStudentByIdQuery request, CancellationToken cancellationToken)
         {
-            var student = await _unitOfWork.Students.Get(s => s.Id == request.id, includes: new List<string> {"Batch"});
+            var student = await _unitOfWork.Students.Get(s => s.Id == request.id, includes: new List<string> { "Batch", "Guardian" });
             if (student == null)
             {
                 return new BaseResponse<StudentResponse>

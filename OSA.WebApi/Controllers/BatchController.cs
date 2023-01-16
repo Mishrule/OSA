@@ -41,11 +41,7 @@ namespace OSA.WebApi.Controllers
                 var batches = await _mediator.Send(new GetBatchesQuery());
                 if (!batches.IsSuccess)
                 {
-                    return new BaseResponseList<BatchResponse>()
-                    {
-                        IsSuccess = false,
-                        Message = "Sorry no records was found"
-                    };
+                    return batches;
                 }
 
                 return Ok(batches);
@@ -70,11 +66,7 @@ namespace OSA.WebApi.Controllers
                 var batch = await _mediator.Send(new GetBatchByNameQuery(batchName));
                 if (!batch.IsSuccess)
                 {
-                    return new BaseResponseList<BatchResponse>()
-                    {
-                        IsSuccess = false,
-                        Message = "Sorry no records was found"
-                    };
+                    return batch;
                 }
 
                 return Ok(batch);
@@ -97,13 +89,9 @@ namespace OSA.WebApi.Controllers
             try
             {
                 var batch = await _mediator.Send(new GetBatchByIdQuery(id));
-                if (batch == null)
+                if (!batch.IsSuccess)
                 {
-                    return new BaseResponse<BatchResponse>()
-                    {
-                        IsSuccess = false,
-                        Message = "Sorry no records was found"
-                    };
+                    return batch;
                 }
 
                 return Ok(batch);
@@ -130,11 +118,7 @@ namespace OSA.WebApi.Controllers
                 var isSuccess = await _unitOfWork.Save(HttpContext);
                 if (!isSuccess)
                 {
-                    return new BaseResponse<BatchResponse>()
-                    {
-                        IsSuccess = false,
-                        Message = "Failed to Create Batch"
-                    };
+                    return result;
                 }
 
                 return Ok(result);
@@ -169,11 +153,7 @@ namespace OSA.WebApi.Controllers
                 var isSuccess = await _unitOfWork.Save(HttpContext);
                 if (!isSuccess)
                 {
-                    return new BaseResponse<BatchResponse>()
-                    {
-                        IsSuccess = false,
-                        Message = "Failed to Update Batch"
-                    };
+                    return result;
                 }
 
                 return Ok(result);
@@ -208,11 +188,7 @@ namespace OSA.WebApi.Controllers
                 var isSuccess = await _unitOfWork.Save(HttpContext);
                 if (!isSuccess)
                 {
-                    return new BaseResponse<BatchResponse>()
-                    {
-                        IsSuccess = false,
-                        Message = "Failed to Delete Batch"
-                    };
+                    return result;
                 }
 
                 return Ok(result);

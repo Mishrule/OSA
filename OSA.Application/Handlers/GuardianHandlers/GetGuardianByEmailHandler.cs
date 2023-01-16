@@ -12,20 +12,20 @@ using OSA.Domain.Repositories.Base;
 
 namespace OSA.Application.Handlers.GuardianHandlers
 {
-  public class GetGuardianByFullNameHandler:IRequestHandler<GetGuardianByFullNameQuery, BaseResponse<GuardianResponse>>
+  public class GetGuardianByEmailHandler:IRequestHandler<GetGuardianByEmailQuery, BaseResponse<GuardianResponse>>
   {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public GetGuardianByFullNameHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public GetGuardianByEmailHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
       _unitOfWork = unitOfWork;
       _mapper = mapper;
     }
 
-    public async Task<BaseResponse<GuardianResponse>> Handle(GetGuardianByFullNameQuery request, CancellationToken cancellationToken)
+    public async Task<BaseResponse<GuardianResponse>> Handle(GetGuardianByEmailQuery request, CancellationToken cancellationToken)
     {
-      var guardian = await _unitOfWork.Guardians.Get(g => g.FullName == request.FullName);
+      var guardian = await _unitOfWork.Guardians.Get(g => g.Email == request.Email, includes: new List<string> { "Student" });
       if (guardian == null)
       {
         return new BaseResponse<GuardianResponse>()

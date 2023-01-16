@@ -7,10 +7,10 @@ namespace OSA.Domain.Entities
 {
     public class Guardian : EntityBase
     {
-	    public Guardian()
-	    {
-		    OtherGuardian = new HashSet<OtherGuardian>();
-	    }
+	    //public Guardian()
+	    //{
+		   // OtherGuardian = new HashSet<OtherGuardian>();
+	    //}
 		public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string Surname { get; set; }
@@ -20,10 +20,11 @@ namespace OSA.Domain.Entities
     
         public string Email { get; set; }
         public PartyType PartyType { get; set; }
-        public virtual ICollection<OtherGuardian> OtherGuardian { get; set; }
+        //public virtual ICollection<OtherGuardian> OtherGuardian { get; set; }
 
 
-	//	public int StudentId { get; set; }
+		public int StudentId { get; set; }
+    public Student Student { get; set; }
        
     }
 }

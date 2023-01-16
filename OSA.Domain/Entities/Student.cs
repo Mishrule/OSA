@@ -25,9 +25,9 @@ namespace OSA.Domain.Entities
         [ForeignKey("Batch")]
         public int BatchId { get; set; }
         public virtual Batch Batch { get; set; }
-    [ForeignKey("Guardian")]
-    public int  GuardianId { get; set; }
-    public virtual Guardian Guardian { get; set; }
+    //[ForeignKey("Guardian")]
+    //public int  GuardianId { get; set; }
+    public Guardian Guardian { get; set; }
 
 
   }

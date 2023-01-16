@@ -25,7 +25,7 @@ namespace OSA.Application.Handlers.StudentHandlers
 
         public async Task<BaseResponse<StudentResponse>> Handle(GetStudentByFullNameQuery request, CancellationToken cancellationToken)
         {
-            var student = await _unitOfWork.Students.Get(s => s.FullName == request.FullName, includes:new List<string>{"Batch"});
+            var student = await _unitOfWork.Students.Get(s => s.FullName == request.FullName, includes:new List<string>{"Batch","Guardian"});
             var response = _mapper.Map<StudentResponse>(student);
             return new BaseResponse<StudentResponse>()
             {

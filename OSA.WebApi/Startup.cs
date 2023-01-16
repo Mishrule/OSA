@@ -10,8 +10,10 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using OSA.Application;
 using OSA.Infrastructure.Data;
 using OSA.Infrastructure;
@@ -33,7 +35,11 @@ namespace OSA.WebApi
 			services.AddInfrastructure(Configuration);
 			services.AddApplication();
 			
-			services.AddControllers();
+			//services.AddControllers();
+
+			services.AddControllers().AddNewtonsoftJson(x =>
+				x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
 			services.AddSwaggerGen(c =>
 			{
 				c.SwaggerDoc("v1", new OpenApiInfo { Title = "OSA.WebApi", Version = "v1" });

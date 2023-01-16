@@ -22,6 +22,8 @@ namespace OSA.Infrastructure
         {
             service.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("IdentityConnection")));
 
+           
+
             #region Repositories
 
             service.AddTransient(typeof(IRepository<>), typeof(Repository<>));

@@ -67,34 +67,6 @@ namespace OSA.WebApi.Controllers
         var guardian = await _mediator.Send(new GetGuardianByContactQuery(contact));
         if (!guardian.IsSuccess)
         {
-          return new BaseResponse<GuardianResponse>
-          {
-            IsSuccess = false,
-            Message = $"Sorry no contact of {contact} was found"
-          };
-        }
-
-        return Ok(guardian);
-      }
-      catch (Exception e)
-      {
-        return new BaseResponse<GuardianResponse>
-        {
-          IsSuccess = false,
-          Message = $"Error: {e.Message}"
-        };
-      }
-    }
-
-    [HttpGet("GetGuardianByFullName/{fullName}")]
-    [ProducesResponseType(typeof(BaseResponse<GuardianResponse>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<BaseResponse<GuardianResponse>>> GetGuardianByFullName(string fullName)
-    {
-      try
-      {
-        var guardian = await _mediator.Send(new GetGuardianByFullNameQuery(fullName));
-        if (!guardian.IsSuccess)
-        {
           return guardian;
         }
 
@@ -109,6 +81,30 @@ namespace OSA.WebApi.Controllers
         };
       }
     }
+
+    //[HttpGet("GetGuardianByEmail/{email}")]
+    //[ProducesResponseType(typeof(BaseResponse<GuardianResponse>), (int)HttpStatusCode.OK)]
+    //public async Task<ActionResult<BaseResponse<GuardianResponse>>> GetGuardianByEmail(string email)
+    //{
+    //  try
+    //  {
+    //    var guardian = await _mediator.Send(new GetGuardianByEmailQuery(email));
+    //    if (!guardian.IsSuccess)
+    //    {
+    //      return guardian;
+    //    }
+
+    //    return Ok(guardian);
+    //  }
+    //  catch (Exception e)
+    //  {
+    //    return new BaseResponse<GuardianResponse>
+    //    {
+    //      IsSuccess = false,
+    //      Message = $"Error: {e.Message}"
+    //    };
+    //  }
+    //}
 
     [HttpGet("GetGuardianById/{id}")]
     [ProducesResponseType(typeof(BaseResponse<GuardianResponse>), (int)HttpStatusCode.OK)]
